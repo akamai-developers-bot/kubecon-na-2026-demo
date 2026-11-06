@@ -117,6 +117,13 @@ wait-for-it() {
 setup() {
     cd $workdir
 
+    if [[ ! -f key.txt ]]; then
+        false
+        msg "missing key.txt file"
+    fi
+
+    [[ -f .env.enc ]] && age -d -i key.txt .env.enc > .env
+
     set -a
     source .env
     set +a
@@ -126,13 +133,6 @@ setup() {
         config:linode-cli > $HOME/.config/linode-cli
         msg "configure linode-cli"
     fi
-
-    if [[ ! -f key.txt ]]; then
-        false
-        msg "missing key.txt file"
-    fi
-
-    [[ -f .env.enc ]] && age -d -i key.txt .env.enc > .env
 }
 
 config:linode-cli() {
@@ -263,20 +263,21 @@ repo:prod() {
     local argocd_dst="env/manifests/namespaces/argocd/applications"
     local route_dst="env/manifests/namespaces/headlamp/httproute"
 
-    declare -A src_files=(
-        [argocd-headlamp.yaml]="$argocd_dst"
-        [gateway-headlamp.yaml]="$route_dst"
-        [teams]="env/teams"
+    local src_files=(
+        "argocd-headlamp.yaml:$argocd_dst"
+        "gateway-headlamp.yaml:$route_dst"
+        "teams:env/teams"
     )
 
     mkdir -p $argocd_dst $route_dst
-    for key in "${!src_files[@]}"; do
+    for entry in "${src_files[@]}"; do
+        local key="${entry%%:*}"
+        local dst="${entry#*:}"
         if [[ $key == "teams" ]]; then
             rsync -qavp $tmp/$key/ env/teams/
             continue
         fi
 
-        local dst="${src_files[$key]}"
         rsync -qavp $tmp/manifests/$key $dst/$key
     done
 
@@ -632,7 +633,7 @@ copy() {
     copy:build
     OLD_IFS=$IFS
 
-    declare -A inputs
+    local inputs=()
     printf "\n${grey}%5s${reset}" "secrets"
     printf "\n${grey}%5s${reset}" "-------"
     for i in "${secret_index[@]}"; do
@@ -655,7 +656,7 @@ copy() {
         printf "\n\n${yellow}[ input ]${grey} select value(s) to copy (int): ${reset}"
         read -r prompt
 
-        if [[ -v inputs[$prompt] ]]; then
+        if [[ $prompt =~ ^[0-9]+$ && -n ${inputs[$prompt]} ]]; then
             local selected="${inputs[$prompt]}"
             break
         fi
