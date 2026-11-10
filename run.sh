@@ -45,7 +45,7 @@ msg() {
 deps() {
     local brew=$(which brew)
     local brew_install="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-    local pkgs=("linode-cli" "rclone" "kubectl" "coreutils" "jq" "python3" "curl" "xclip" "age")
+    local pkgs=("linode-cli" "rclone" "kubectl" "coreutils" "jq" "python3" "curl" "xclip" "age" "bash")
 
     if [[ -z $brew ]]; then
         msg "installing homebrew"
@@ -115,17 +115,18 @@ wait-for-it() {
 }
 
 setup() {
+    local linode_conf="$HOME/.config/linode-cli"
     cd $workdir
 
     set -a
     source .env
     set +a
 
-    if [[ ! -f "$HOME/.config/linode-cli" ]]; then
-        mkdir -p $HOME/.config
-        config:linode-cli > $HOME/.config/linode-cli
-        msg "configure linode-cli"
-    fi
+    mkdir -p $HOME/.config
+    [[ -f $linode_conf ]] && [[ ! -f $linode_conf.bak ]] && echo $linode_conf > $linode_conf.bak
+        
+    config:linode-cli > $HOME/.config/linode-cli
+    msg "configure linode-cli"
 
     if [[ ! -f key.txt ]]; then
         false
@@ -303,12 +304,19 @@ linode:obj() {
 
     # purge related buckets
     local buckets=$(curl -s -H 'accept: application/json' -H "authorization: Bearer $LINODE_TOKEN" $ep | jq -r 2>&1)
+    echo -e "buckets:\n$buckets"
+
+    if [[ $PURGE_ALL ]]; then
+        local filtered=($(echo $buckets | jq -r .data[].label))
+        [[ -n $filtered ]] && { echo $filtered; return; }
+    fi
+
     local filtered=($(echo $buckets | jq -r '.data[] | select(.label | startswith("lke")).label' 2> /dev/null))
 
     if [[ -n $filtered ]] && [[ $filtered != "null" ]]; then
         msg "purging obj buckets"
         for i in "${filtered[@]}"; do
-            rclone purge s3remote:$i >/dev/null
+            rclone purge s3remote:$i
             msg "delete $i"
         done
     fi
