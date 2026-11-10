@@ -511,14 +511,14 @@ copy:headlamp() {
     printf "\n${yellow}[ input ]${grey} copy headlamp:url (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $headlamp_url | xclip -selection clipboard
+        echo $headlamp_url | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy headlamp:token (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $headlamp_token | xclip -selection clipboard
+        echo $headlamp_token | pbcopy
         msg "copied to clipboard"
     fi
 }
@@ -529,28 +529,28 @@ copy:apl() {
     printf "\n${yellow}[ input ]${grey} copy apl:consoleUrl (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $consoleurl | xclip -selection clipboard
+        echo $consoleurl | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy apl:username (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $username | xclip -selection clipboard
+        echo $username | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy apl:initPassword (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $password | xclip -selection clipboard
+        echo $password | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy apl:password (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $APL_ADMIN_PASS | xclip -selection clipboard
+        echo $APL_ADMIN_PASS | pbcopy
         msg "copied to clipboard"
     fi
 }
@@ -559,21 +559,21 @@ copy:catalog() {
     printf "\n${yellow}[ input ]${grey} copy catalog:name? (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $CATALOG_NAME | xclip -selection clipboard
+        echo $CATALOG_NAME | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy catalog:url? (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $CATALOG_URL | xclip -selection clipboard
+        echo $CATALOG_URL | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy catalog:branch? (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $CATALOG_BRANCH | xclip -selection clipboard
+        echo $CATALOG_BRANCH | pbcopy
         msg "copied to clipboard"
     fi
 }
@@ -583,28 +583,28 @@ copy:repo() {
     printf "\n${yellow}[ input ]${grey} copy repo:url (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $repo_url | xclip -selection clipboard
+        echo $repo_url | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy repo:branch (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $GIT_BRANCH | xclip -selection clipboard
+        echo $GIT_BRANCH | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy repo:password (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then
-        echo $GH_TOKEN | xclip -selection clipboard
+        echo $GH_TOKEN | pbcopy
         msg "copied to clipboard"
     fi
 
     printf "\n${yellow}[ input ]${grey} copy repo:email (y/n): ${reset}"
     read -r prompt
     if [[ $prompt == "y" ]]; then 
-        echo $GIT_EMAIL | xclip -selection clipboard
+        echo $GIT_EMAIL | pbcopy
         msg "copied to clipboard"
     fi
 }
@@ -675,22 +675,22 @@ copy() {
     case $selected in
         apl) copy:apl;;
         apl:password)
-            echo $APL_ADMIN_PASS | xclip -selection clipboard
+            echo $APL_ADMIN_PASS | pbcopy
             msg "copied to clipboard"
             ;;
         catalog) copy:catalog;;
         linode:token)
-            echo $LINODE_TOKEN | xclip -selection clipboard
+            echo $LINODE_TOKEN | pbcopy
             msg "copied to clipboard"
             ;;
         repo) copy:repo;;
         repo:password)
-            echo $GH_TOKEN | xclip -selection clipboard
+            echo $GH_TOKEN | pbcopy
             msg "copied to clipboard"
             ;;
         headlamp) copy:headlamp;;
         headlamp:token)
-            echo $headlamp_token | xclip -selection clipboard
+            echo $headlamp_token | pbcopy
             msg "copied to clipboard"
             ;;
     esac
