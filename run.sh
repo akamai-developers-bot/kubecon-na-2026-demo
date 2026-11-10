@@ -153,7 +153,7 @@ repo() {
 
     cd $workdir
     if [[ ! -d "$REPO" ]]; then
-        local clone_txt=$(git clone $repo_url 2>&1)
+        local clone_txt=$(git clone --recurse-submodules $repo_url 2>&1)
         repo:print-lines "$clone_txt"
     fi
 
