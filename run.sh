@@ -353,7 +353,7 @@ linode:cluster() {
       --node_pools.type g7-dedicated-16-8 \
       --node_pools.count 3 --json 2>&1)
 
-    local err=$(echo $result |  grep -oP '\[{.*\}]' | jq -r .[].reason)
+    local err=$(echo $result |  grep -oE '\[{.*\}]' | jq -r .[].reason)
     if [[ $err != "null" ]]; then
         if [[ $err != $err_msg ]]; then
             false
